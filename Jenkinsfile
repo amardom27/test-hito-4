@@ -48,6 +48,14 @@ pipeline {
                 echo 'Building Docker image...'
                 sh 'docker build -t mi-app-hito .'
 
+                // Detenemos el contenedor previo si existe
+                echo 'Stopping existing Docker container if it exists...'
+                sh '''
+                    if [ $(docker ps -q -f name=mi-app-hito-cont) ]; then
+                        docker stop mi-app-hito-cont
+                    fi
+                '''
+
                 // Ejecutamos el contenedor en segundo plano y con --rm
                 echo 'Running Docker container...'
                 sh 'docker run -d --name mi-app-hito-cont -p 3000:80 --rm mi-app-hito'
